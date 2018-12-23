@@ -1,11 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 
 android {
     compileSdkVersion 28
-
-
 
     defaultConfig {
         minSdkVersion 17
@@ -35,29 +31,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-artifacts {
-    archives javadocJar
-    archives sourcesJar
+ext{
+    PUBLISH_GROUP_ID = 'com.cheng'
+    PUBLISH_ARTIFACT_ID = 'TablayoutIndicator'
+    PUBLISH_VERSION = '1.0.1'
 }
 
-//加载配置文件
-def bintrayProperties = new Properties()
-bintrayProperties.load(new FileInputStream(file("bintray.properties")))
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
 
-bintray {
-    user = bintrayProperties['bintray_user']
-    key = bintrayProperties['bintray_key']
-    configurations = ['archives']
-    pkg {
-        userOrg = bintrayProperties['bintray_userOrg']
-        repo = bintrayProperties['bintray_repo']
-        name = 'com.axiba.blockloading'
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ['Apache-2.0']
-        publish = true
-    }
-}
 
-group = 'com.chengguo49930.tablayoutIndicator'
-version = '1.0'

@@ -1,4 +1,4 @@
-package com.chengguo.zhenai.indicator
+package com.chengguo.indicator
 
 import android.annotation.SuppressLint
 import android.content.Context

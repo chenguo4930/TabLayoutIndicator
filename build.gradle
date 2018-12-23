@@ -3,14 +3,19 @@
 buildscript {
     ext.kotlin_version = '1.3.11'
     repositories {
+
+        maven{
+            url "http://maven.aliyun.com/nexus/content/groups/public"
+        }
+        maven{
+            url 'https://dl.bintray.com/chengguo493/maven'
+        }
         google()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,8 +24,23 @@ buildscript {
 
 allprojects {
     repositories {
+        maven{
+            url 'https://dl.bintray.com/chengguo493/maven'
+        }
+        maven{
+            url "http://maven.aliyun.com/nexus/content/groups/public"
+        }
+
         google()
         jcenter()
+    }
+
+    //开源库中有中文注释,加上这些
+    tasks.withType(Javadoc) {
+        options{ encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
     }
 }
 
