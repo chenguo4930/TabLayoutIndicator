@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.View
-import com.chengguo.zhenai.indicator.R
 
 
 /**
