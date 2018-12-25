@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
@@ -50,6 +51,14 @@ class TabLayoutIndicator @JvmOverloads constructor(
     private var mIndicatorDrawable: Drawable? = null
     private var mBitmapPaint: Paint? = null
     private var mIndicatorBitmap: Bitmap? = null
+    /**
+     * 用集合将各个title的宽度搜集起来，不用每次去计算,节约性能
+     */
+    private var mItemWithArray: MutableList<Float>? = null
+    /**
+     * 自定义根据文字变化的宽度缩放系数
+     */
+    private var mMyScale = 0f
 
     var mViewPager: ViewPager? = null
         set(value) {
@@ -79,6 +88,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
             mIndicatorDrawable = attrsArray.getDrawable(R.styleable.TabLayoutIndicator_indicator_drawable)
             mCanScanAnim = attrsArray.getBoolean(R.styleable.TabLayoutIndicator_indicator_can_anim, false)
             mMatchTitleWidth = attrsArray.getBoolean(R.styleable.TabLayoutIndicator_indicator_match_title_width, false)
+            mMyScale = attrsArray.getFloat(R.styleable.TabLayoutIndicator_indicator_scale, 0f)
             attrsArray.recycle()
         }
 
@@ -106,15 +116,23 @@ class TabLayoutIndicator @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
+        if (mViewPager != null && mViewPager!!.adapter != null && mItemWithArray == null) {
+            mItemWithArray = MutableList(mViewPager!!.adapter!!.count) {
+                getTitleWidth(it)
+            }
+        }
+
         if (mCanScanAnim) {
             //indicator长度动态变换
             val startX: Float
             val endX: Float
             if (mPositionOffset <= 0.5) {
                 if (mMatchTitleWidth) {
-                    startX = mItemWith * mPosition + mItemWith / 2 - getTitleWidth(mPosition) / 2
-                    endX = startX + getTitleWidth(mPosition) +
-                            (2 * mItemWith - getTitleWidth(mPosition) + getTitleWidth(mPosition + 1)) * mPositionOffset
+                    startX = mItemWith * mPosition + mItemWith / 2 - getItemTitleWidth(mPosition) / 2
+                    //动态计算结束点
+                    endX = startX + getItemTitleWidth(mPosition) +
+                            (2 * mItemWith - getItemTitleWidth(mPosition) + getItemTitleWidth(mPosition + 1)) *
+                            mPositionOffset
 //                            (mItemWith / 2 - getTitltWidth(mPosition) / 2 + mItemWith /2 +getTitltWidth(mPosition + 1)/2) * 2 * mPositionOffset
                 } else {
                     startX = mItemWith * mPosition + mMarginLeft
@@ -122,9 +140,10 @@ class TabLayoutIndicator @JvmOverloads constructor(
                 }
             } else {
                 if (mMatchTitleWidth) {
-                    endX = mItemWith * (mPosition + 1) + mItemWith / 2 + getTitleWidth(mPosition + 1)
-                    startX = mItemWith * mPosition + mItemWith / 2 - getTitleWidth(mPosition) / 2 +
-                            (2 * mItemWith + getTitleWidth(mPosition) - getTitleWidth(mPosition + 1)) *
+                    endX = mItemWith * (mPosition + 1) + mItemWith / 2 + getItemTitleWidth(mPosition + 1) / 2
+                    //动态计算开始点
+                    startX = mItemWith * mPosition + mItemWith / 2 - getItemTitleWidth(mPosition) / 2 +
+                            (2 * mItemWith + getItemTitleWidth(mPosition) - getItemTitleWidth(mPosition + 1)) *
                             (mPositionOffset - 0.5f)
                 } else {
                     endX = mItemWith * (mPosition + 1) + mMarginLeft + mIndicatorWith
@@ -149,15 +168,32 @@ class TabLayoutIndicator @JvmOverloads constructor(
     }
 
     /**
+     * 获取每个title的宽度
+     */
+    private fun getItemTitleWidth(position: Int) =
+        if (mItemWithArray != null && position < mItemWithArray!!.size) mItemWithArray!![position] else mIndicatorWith
+
+
+    /**
      * 获取相应位子title的长度
      */
     private fun getTitleWidth(position: Int): Float {
-        Log.e(
-            "---------",
-            "---------mViewPager?.adapter?.getPageTitle(position)= ${mViewPager?.adapter?.getPageTitle(position)}--position=$position-----"
-        )
-        return mPaint.measureText(mViewPager?.adapter?.getPageTitle(position).toString())
+        var width = 0f
+        if (position < mViewPager?.adapter?.count ?: 0) {
+            val string = mViewPager?.adapter?.getPageTitle(position).toString()
+            val rect = Rect()
+            mPaint.getTextBounds(string, 0, string.length, rect)
+            width = rect.width().toFloat()
+        }
+        return if (mMyScale != 0f) mMyScale * width else dp2px(context, width)
+    }
 
+    /**
+     * dp转换成px
+     */
+    private fun dp2px(context: Context, dpValue: Float): Float {
+        val scale = context.resources.displayMetrics.density
+        return dpValue * scale + 0.5f
     }
 
     private fun drawableToBitmap(drawable: Drawable, width: Int, height: Int): Bitmap {
