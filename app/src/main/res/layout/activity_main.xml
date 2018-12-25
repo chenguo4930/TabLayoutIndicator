@@ -15,14 +15,43 @@
             app:tabIndicatorHeight="0dp"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
-            android:id="@+id/tabLayoutIndicator"
+            android:id="@+id/tabLayoutIndicator1"
             android:background="#ffffff"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="6dp"
+            app:indicator_with="50dp"
+            app:indicator_color="#ff00ff"/>
+
+    <com.chengguo.indicator.TabLayoutIndicator
+            android:id="@+id/tabLayoutIndicator2"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
             app:indicator_can_anim="true"
-            app:indicator_match_title_width="true"
+            app:indicator_with="50dp"
             app:indicator_drawable="@drawable/indicator_shape"/>
 
+    <com.chengguo.indicator.TabLayoutIndicator
+            android:id="@+id/tabLayoutIndicator3"
+            android:background="#ffffff"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            app:indicator_can_anim="true"
+            app:indicator_match_title_width="true"
+            app:indicator_color="#2741e9"/>
+
+    <com.chengguo.indicator.TabLayoutIndicator
+            android:id="@+id/tabLayoutIndicator4"
+            android:background="#ffffff"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            app:indicator_can_anim="true"
+            app:indicator_match_title_width="true"
+            app:indicator_color="#0c0c0e"
+            app:indicator_scale="4.0"/>
 
     <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
