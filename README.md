@@ -1,6 +1,6 @@
 # TabLayoutIndicator
 自定义tablayout的指示器，实现粘连效果
- ![img]https://github.com/chenguo4930/TabLayoutIndicator/blob/master/indicator.gif
+ ![img](https://github.com/chenguo4930/TabLayoutIndicator/blob/master/indicator.gif)
  ```
     <!--自定义TabLayout指示器-->
     <declare-styleable name="TabLayoutIndicator">
