@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 
 /**
@@ -28,7 +27,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
     /**
      * 指示器的宽度和颜色
      */
-    private var mIndicatorWith = 0f
+    private var mIndicatorWidth = 0f
     private var mIndicatorColor: Int = 0x9f6def
 
     private val mPaint = Paint()
@@ -83,7 +82,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
     init {
         if (attrs != null) {
             val attrsArray = getContext().obtainStyledAttributes(attrs, R.styleable.TabLayoutIndicator)
-            mIndicatorWith = attrsArray.getDimension(R.styleable.TabLayoutIndicator_indicator_with, 20f)
+            mIndicatorWidth = attrsArray.getDimension(R.styleable.TabLayoutIndicator_indicator_width, 20f)
             mIndicatorColor = attrsArray.getColor(R.styleable.TabLayoutIndicator_indicator_color, 0x9f6def)
             mIndicatorDrawable = attrsArray.getDrawable(R.styleable.TabLayoutIndicator_indicator_drawable)
             mCanScanAnim = attrsArray.getBoolean(R.styleable.TabLayoutIndicator_indicator_can_anim, false)
@@ -104,10 +103,10 @@ class TabLayoutIndicator @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         mItemWith = width / mTotalTabCount
-        mMarginLeft = mItemWith / 2 - mIndicatorWith / 2
+        mMarginLeft = mItemWith / 2 - mIndicatorWidth / 2
         mPaint.strokeWidth = height.toFloat()
         if (mIndicatorDrawable != null) {
-            mIndicatorBitmap = drawableToBitmap(mIndicatorDrawable!!, mIndicatorWith.toInt(), measuredHeight)
+            mIndicatorBitmap = drawableToBitmap(mIndicatorDrawable!!, mIndicatorWidth.toInt(), measuredHeight)
             mBitmapPaint = Paint().apply {
                 style = Paint.Style.FILL
                 isAntiAlias = true
@@ -136,7 +135,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
 //                            (mItemWith / 2 - getTitltWidth(mPosition) / 2 + mItemWith /2 +getTitltWidth(mPosition + 1)/2) * 2 * mPositionOffset
                 } else {
                     startX = mItemWith * mPosition + mMarginLeft
-                    endX = startX + mIndicatorWith + mItemWith * 2 * mPositionOffset
+                    endX = startX + mIndicatorWidth + mItemWith * 2 * mPositionOffset
                 }
             } else {
                 if (mMatchTitleWidth) {
@@ -146,7 +145,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
                             (2 * mItemWith + getItemTitleWidth(mPosition) - getItemTitleWidth(mPosition + 1)) *
                             (mPositionOffset - 0.5f)
                 } else {
-                    endX = mItemWith * (mPosition + 1) + mMarginLeft + mIndicatorWith
+                    endX = mItemWith * (mPosition + 1) + mMarginLeft + mIndicatorWidth
                     startX = mMarginLeft + mItemWith * mPosition + (mPositionOffset - 0.5f) * 2 * mItemWith
                 }
             }
@@ -162,7 +161,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
             if (mIndicatorBitmap != null) {
                 canvas?.drawBitmap(mIndicatorBitmap!!, startX, 0f, mBitmapPaint)
             } else {
-                canvas?.drawLine(startX, height / 2.toFloat(), startX + mIndicatorWith, height / 2.toFloat(), mPaint)
+                canvas?.drawLine(startX, height / 2.toFloat(), startX + mIndicatorWidth, height / 2.toFloat(), mPaint)
             }
         }
     }
@@ -171,7 +170,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
      * 获取每个title的宽度
      */
     private fun getItemTitleWidth(position: Int) =
-        if (mItemWithArray != null && position < mItemWithArray!!.size) mItemWithArray!![position] else mIndicatorWith
+        if (mItemWithArray != null && position < mItemWithArray!!.size) mItemWithArray!![position] else mIndicatorWidth
 
 
     /**

@@ -19,7 +19,7 @@
             android:background="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            app:indicator_with="50dp"
+            app:indicator_width="50dp"
             app:indicator_color="#ff00ff"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
@@ -29,7 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="6dp"
             app:indicator_can_anim="true"
-            app:indicator_with="50dp"
             app:indicator_drawable="@drawable/indicator_shape"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
