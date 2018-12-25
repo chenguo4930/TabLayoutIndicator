@@ -9,8 +9,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
-
 
 /**
  * 自定义tabLayout指示器
@@ -18,8 +18,11 @@ import android.view.View
  * @author ChengGuo
  * @date 2018/12/10
  */
-class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : View(context, attrs, defStyleAttr) {
+class TabLayoutIndicator @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     /**
      * 指示器的宽度和颜色
@@ -38,6 +41,10 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
      */
     private var mCanScanAnim = false
     /**
+     * 是否和标题一样的长度
+     */
+    private var mMatchTitleWidth = false
+    /**
      * 设置了drawable就回执drawable，否则就绘制线条
      */
     private var mIndicatorDrawable: Drawable? = null
@@ -47,7 +54,7 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
     var mViewPager: ViewPager? = null
         set(value) {
             field = value
-            mTotalTabCount = field!!.adapter?.count?:1
+            mTotalTabCount = field!!.adapter?.count ?: 1
             field!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
                 }
@@ -71,6 +78,7 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
             mIndicatorColor = attrsArray.getColor(R.styleable.TabLayoutIndicator_indicator_color, 0x9f6def)
             mIndicatorDrawable = attrsArray.getDrawable(R.styleable.TabLayoutIndicator_indicator_drawable)
             mCanScanAnim = attrsArray.getBoolean(R.styleable.TabLayoutIndicator_indicator_can_anim, false)
+            mMatchTitleWidth = attrsArray.getBoolean(R.styleable.TabLayoutIndicator_indicator_match_title_width, false)
             attrsArray.recycle()
         }
 
@@ -103,11 +111,25 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
             val startX: Float
             val endX: Float
             if (mPositionOffset <= 0.5) {
-                startX = mItemWith * mPosition + mMarginLeft
-                endX = startX + mIndicatorWith + mItemWith * 2 * mPositionOffset
+                if (mMatchTitleWidth) {
+                    startX = mItemWith * mPosition + mItemWith / 2 - getTitleWidth(mPosition) / 2
+                    endX = startX + getTitleWidth(mPosition) +
+                            (2 * mItemWith - getTitleWidth(mPosition) + getTitleWidth(mPosition + 1)) * mPositionOffset
+//                            (mItemWith / 2 - getTitltWidth(mPosition) / 2 + mItemWith /2 +getTitltWidth(mPosition + 1)/2) * 2 * mPositionOffset
+                } else {
+                    startX = mItemWith * mPosition + mMarginLeft
+                    endX = startX + mIndicatorWith + mItemWith * 2 * mPositionOffset
+                }
             } else {
-                endX = mItemWith * (mPosition + 1) + mMarginLeft + mIndicatorWith
-                startX = mMarginLeft + mItemWith * mPosition + (mPositionOffset - 0.5f) * 2 * mItemWith
+                if (mMatchTitleWidth) {
+                    endX = mItemWith * (mPosition + 1) + mItemWith / 2 + getTitleWidth(mPosition + 1)
+                    startX = mItemWith * mPosition + mItemWith / 2 - getTitleWidth(mPosition) / 2 +
+                            (2 * mItemWith + getTitleWidth(mPosition) - getTitleWidth(mPosition + 1)) *
+                            (mPositionOffset - 0.5f)
+                } else {
+                    endX = mItemWith * (mPosition + 1) + mMarginLeft + mIndicatorWith
+                    startX = mMarginLeft + mItemWith * mPosition + (mPositionOffset - 0.5f) * 2 * mItemWith
+                }
             }
             if (mIndicatorBitmap != null) {
                 mIndicatorBitmap = drawableToBitmap(mIndicatorDrawable!!, (endX - startX).toInt(), measuredHeight)
@@ -126,6 +148,18 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
+    /**
+     * 获取相应位子title的长度
+     */
+    private fun getTitleWidth(position: Int): Float {
+        Log.e(
+            "---------",
+            "---------mViewPager?.adapter?.getPageTitle(position)= ${mViewPager?.adapter?.getPageTitle(position)}--position=$position-----"
+        )
+        return mPaint.measureText(mViewPager?.adapter?.getPageTitle(position).toString())
+
+    }
+
     private fun drawableToBitmap(drawable: Drawable, width: Int, height: Int): Bitmap {
         if (drawable is BitmapDrawable) {
             return drawable.bitmap
@@ -138,3 +172,5 @@ class TabLayoutIndicator @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
 }
+
+
