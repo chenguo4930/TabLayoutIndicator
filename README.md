@@ -33,6 +33,7 @@ compile 'com.cheng:ViewPagerIndicator:1.0.2'
 ```
 
 ```
+<!--固定宽度、设置颜色-->
 com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator1"
             android:background="#ffffff"
@@ -41,6 +42,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_with="50dp"
             app:indicator_color="#ff00ff"/>
 
+<!--开启粘性动画、固定宽度、设置drawable-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator2"
             android:layout_marginTop="10dp"
@@ -51,6 +53,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_with="50dp"
             app:indicator_drawable="@drawable/indicator_shape"/>
 
+<!--开启粘性动画、动态匹配title宽度、设置颜色-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator3"
             android:background="#ffffff"
@@ -61,6 +64,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_match_title_width="true"
             app:indicator_color="#2741e9"/>
 
+<!--开启粘性动画、动态匹配title宽度、设置颜色、动态调整比例因子-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator4"
             android:background="#ffffff"
