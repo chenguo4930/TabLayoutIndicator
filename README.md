@@ -16,8 +16,30 @@ compile 'com.cheng:ViewPagerIndicator:1.0.2'
 - **match_title_width: 在can_anim=true的情况下，是否根据title的宽度自动变化为对应title的宽度，如例子中第3例和第4例**
 - **scale ：match_title_width=true的情况下，是否动态调整宽度比例。当match_title_width=true时，如果发现宽度与文字不符合时，可以调整这个参数，动态调整**
 
-## 例子如下：
+## 注意事项
+**必须在viewPager设置了adapter之后，再将viewpager设置给indicator**
 
+## 例子如下：
+```
+
+    private fun initViewPager() {
+        viewPageAdapter.fragmentPages.addAll(getFragmentPages())
+        viewPager.adapter = viewPageAdapter
+        tabLayout.setupWithViewPager(viewPager)
+        tabLayoutIndicator1.mViewPager = viewPager
+        tabLayoutIndicator2.mViewPager = viewPager
+        tabLayoutIndicator3.mViewPager = viewPager
+        tabLayoutIndicator4.mViewPager = viewPager
+    }
+
+    private fun getFragmentPages(): List<FragmentPage> =
+        listOf(
+            FragmentPage(PageFragment(), "Followers"),
+            FragmentPage(PageFragment(), "关注"),
+            FragmentPage(PageFragment(), "me"),
+            FragmentPage(PageFragment(), "测试标题")
+        )
+```
  ![img](https://github.com/chenguo4930/TabLayoutIndicator/blob/master/indicator.gif)
  
  ```
