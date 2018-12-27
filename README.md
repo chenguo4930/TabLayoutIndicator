@@ -26,6 +26,8 @@ compile 'com.cheng:ViewPagerIndicator:1.0.2'
         viewPageAdapter.fragmentPages.addAll(getFragmentPages())
         viewPager.adapter = viewPageAdapter
         tabLayout.setupWithViewPager(viewPager)
+       
+        //再将viewpager设置给indicator
         tabLayoutIndicator1.mViewPager = viewPager
         tabLayoutIndicator2.mViewPager = viewPager
         tabLayoutIndicator3.mViewPager = viewPager
