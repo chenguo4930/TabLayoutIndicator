@@ -16,8 +16,32 @@ compile 'com.cheng:ViewPagerIndicator:1.0.2'
 - **match_title_width: 在can_anim=true的情况下，是否根据title的宽度自动变化为对应title的宽度，如例子中第3例和第4例**
 - **scale ：match_title_width=true的情况下，是否动态调整宽度比例。当match_title_width=true时，如果发现宽度与文字不符合时，可以调整这个参数，动态调整**
 
-## 例子如下：
+## 注意事项
+**必须在viewPager设置了adapter之后，再将viewpager设置给indicator**
 
+## 例子如下：
+```
+
+    private fun initViewPager() {
+        viewPageAdapter.fragmentPages.addAll(getFragmentPages())
+        viewPager.adapter = viewPageAdapter
+        tabLayout.setupWithViewPager(viewPager)
+       
+        //再将viewpager设置给indicator
+        tabLayoutIndicator1.mViewPager = viewPager
+        tabLayoutIndicator2.mViewPager = viewPager
+        tabLayoutIndicator3.mViewPager = viewPager
+        tabLayoutIndicator4.mViewPager = viewPager
+    }
+
+    private fun getFragmentPages(): List<FragmentPage> =
+        listOf(
+            FragmentPage(PageFragment(), "Followers"),
+            FragmentPage(PageFragment(), "关注"),
+            FragmentPage(PageFragment(), "me"),
+            FragmentPage(PageFragment(), "测试标题")
+        )
+```
  ![img](https://github.com/chenguo4930/TabLayoutIndicator/blob/master/indicator.gif)
  
  ```
@@ -33,6 +57,7 @@ compile 'com.cheng:ViewPagerIndicator:1.0.2'
 ```
 
 ```
+<!--固定宽度、设置颜色-->
 com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator1"
             android:background="#ffffff"
@@ -41,6 +66,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_with="50dp"
             app:indicator_color="#ff00ff"/>
 
+<!--开启粘性动画、固定宽度、设置drawable-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator2"
             android:layout_marginTop="10dp"
@@ -51,6 +77,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_with="50dp"
             app:indicator_drawable="@drawable/indicator_shape"/>
 
+<!--开启粘性动画、动态匹配title宽度、设置颜色-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator3"
             android:background="#ffffff"
@@ -61,6 +88,7 @@ com.chengguo.indicator.TabLayoutIndicator
             app:indicator_match_title_width="true"
             app:indicator_color="#2741e9"/>
 
+<!--开启粘性动画、动态匹配title宽度、设置颜色、动态调整比例因子-->
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator4"
             android:background="#ffffff"
