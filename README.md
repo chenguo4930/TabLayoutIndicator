@@ -4,7 +4,7 @@
 ## Usage
  add dependency:
 ```
-compile 'com.cheng:ViewPagerIndicator:1.0.2'
+compile 'com.cheng:ViewPagerIndicator:1.0.3'
 ```
 
 ## 可以自定义indicator如下属性
