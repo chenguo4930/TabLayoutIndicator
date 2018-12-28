@@ -115,7 +115,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        if (mViewPager != null && mViewPager!!.adapter != null && mItemWithArray == null) {
+        if (mMatchTitleWidth && mViewPager != null && mViewPager!!.adapter != null && mItemWithArray == null) {
             mItemWithArray = MutableList(mViewPager!!.adapter!!.count) {
                 getTitleWidth(it)
             }
@@ -178,7 +178,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
      */
     private fun getTitleWidth(position: Int): Float {
         var width = 0f
-        if (position < mViewPager?.adapter?.count ?: 0) {
+        if (position < mViewPager?.adapter?.count ?: 0 && mViewPager?.adapter?.getPageTitle(position) != null) {
             val string = mViewPager?.adapter?.getPageTitle(position).toString()
             val rect = Rect()
             mPaint.getTextBounds(string, 0, string.length, rect)
