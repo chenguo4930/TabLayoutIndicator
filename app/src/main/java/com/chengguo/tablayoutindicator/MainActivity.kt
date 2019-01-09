@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         viewPageAdapter.fragmentPages.addAll(getFragmentPages())
         viewPager.adapter = viewPageAdapter
         tabLayout.setupWithViewPager(viewPager)
+        tab_layout_title.mViewPager = viewPager
+        tabLayoutIndicator0.mViewPager = viewPager
         tabLayoutIndicator1.mViewPager = viewPager
         tabLayoutIndicator2.mViewPager = viewPager
         tabLayoutIndicator3.mViewPager = viewPager
@@ -29,9 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getFragmentPages(): List<FragmentPage> =
         listOf(
-            FragmentPage(PageFragment(), "Followers"),
             FragmentPage(PageFragment(), "关注"),
-            FragmentPage(PageFragment(), "me"),
-            FragmentPage(PageFragment(), "测试标题")
+            FragmentPage(PageFragment(), "热门"),
+            FragmentPage(PageFragment(), "附近的人")
         )
 }
