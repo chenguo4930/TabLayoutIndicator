@@ -96,13 +96,11 @@ class TabLayoutTitle @JvmOverloads constructor(
                        //ViewPager停止了滑动
                        mIsTouched = false
                    }
-                    Log.e("-------","----------state=$state----------")
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                     mPosition = position
                     mPositionOffset = positionOffset
-                    Log.e("-------", "------position=$position----positionOffset=$positionOffset-")
                     invalidate()
                 }
 
@@ -184,7 +182,6 @@ class TabLayoutTitle @JvmOverloads constructor(
                             }
                         }
                     }
-                    Log.e("-------","----------drawText----------")
                     drawText(title, mItemWith * index + mItemWith / 2.toFloat(), height / 2 + mPaint.fontMetrics.bottom, mPaint
                    )
                 }

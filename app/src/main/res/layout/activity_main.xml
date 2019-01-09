@@ -10,8 +10,9 @@
 
     <com.chengguo.indicator.TabLayoutTitle
             android:id="@+id/tab_layout_title"
-            android:layout_width="220dp"
+            android:layout_width="230dp"
             android:layout_height="48dp"
+            android:background="@color/color_white"
             app:title_color="@color/color_12131A"
             app:title_text_normal_size="15"
             app:title_text_select_size="21"
@@ -21,7 +22,7 @@
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator0"
             android:background="#ffffff"
-            android:layout_width="220dp"
+            android:layout_width="230dp"
             android:layout_height="6dp"
             app:indicator_can_anim="true"
             app:indicator_color="@color/color_8B76F9"
@@ -31,7 +32,8 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:tabIndicatorHeight="0dp"/>
+            app:tabIndicatorHeight="0dp"
+            android:visibility="gone"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator1"
@@ -39,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="6dp"
             app:indicator_width="50dp"
+            android:visibility="gone"
             app:indicator_color="#ff00ff"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
@@ -49,6 +52,7 @@
             android:layout_height="6dp"
             app:indicator_can_anim="true"
             app:indicator_width="50dp"
+            android:visibility="gone"
             app:indicator_drawable="@drawable/indicator_shape"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
@@ -56,6 +60,7 @@
             android:background="#ffffff"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="6dp"
             app:indicator_can_anim="true"
             app:indicator_match_title_width="true"
@@ -66,6 +71,7 @@
             android:background="#ffffff"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="6dp"
             app:indicator_can_anim="true"
             app:indicator_match_title_width="true"
