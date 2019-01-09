@@ -33,6 +33,6 @@ class MainActivity : AppCompatActivity() {
         listOf(
             FragmentPage(PageFragment(), "关注"),
             FragmentPage(PageFragment(), "热门"),
-            FragmentPage(PageFragment(), "附近的人")
+            FragmentPage(PageFragment(), "附近")
         )
 }
