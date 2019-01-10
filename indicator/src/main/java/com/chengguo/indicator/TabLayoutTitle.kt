@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.support.v4.view.ViewPager
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
@@ -17,11 +16,8 @@ import android.view.View
  * @author ChengGuo
  * @date 2019/01/10
  */
-class TabLayoutTitle @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : View(context, attrs, defStyleAttr) {
+class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    View(context, attrs, defStyleAttr) {
 
     companion object {
         const val ANIM_MODE_START = 0
@@ -35,12 +31,17 @@ class TabLayoutTitle @JvmOverloads constructor(
          * 手指点击的默认位置为第一个
          */
         const val DEFAULT_TOUCH_POSITION = 0
+        /**
+         * 颜色改变的阈值
+         */
+        const val COLOR_CHANGE_THRESHOLD = 0.5f
     }
 
     /**
-     * title的宽度和颜色
+     * title的宽度、普通颜色、选中后的颜色
      */
-    private var mTextColor: Int = DEFAULT_COLOR
+    private var mTextNormalColor: Int = DEFAULT_COLOR
+    private var mTextSelectColor: Int = DEFAULT_COLOR
 
     private val mPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private var mPosition = 0
@@ -92,10 +93,10 @@ class TabLayoutTitle @JvmOverloads constructor(
 
             field!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
-                   if (state == ViewPager.SCROLL_STATE_IDLE){
-                       //ViewPager停止了滑动
-                       mIsTouched = false
-                   }
+                    if (state == ViewPager.SCROLL_STATE_IDLE) {
+                        //ViewPager停止了滑动
+                        mIsTouched = false
+                    }
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -112,9 +113,10 @@ class TabLayoutTitle @JvmOverloads constructor(
     init {
         if (attrs != null) {
             val attrsArray = getContext().obtainStyledAttributes(attrs, R.styleable.TabLayoutTitle)
-            mTextColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_color, DEFAULT_COLOR)
+            mTextNormalColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_normal_color, DEFAULT_COLOR)
+            mTextSelectColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_select_color, DEFAULT_COLOR)
             mTextNormalSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_normal_size, DEFAULT_NORMAL_SIZE)
-            mTextNormalSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_normal_size, DEFAULT_NORMAL_SIZE)
+            mTextSelectSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_select_size, DEFAULT_NORMAL_SIZE)
             mIsBoldText = attrsArray.getBoolean(R.styleable.TabLayoutTitle_title_is_Bold, false)
             mAnimMode = attrsArray.getInt(R.styleable.TabLayoutTitle_title_anim_mode, ANIM_MODE_MIDDLE)
             attrsArray.recycle()
@@ -124,7 +126,7 @@ class TabLayoutTitle @JvmOverloads constructor(
         mPaint.run {
             isAntiAlias = true
             style = Paint.Style.FILL
-            color = mTextColor
+            color = mTextNormalColor
             textSize = dp2px(mTextNormalSize)
             isFakeBoldText = mIsBoldText
             //居中对齐
@@ -152,7 +154,7 @@ class TabLayoutTitle @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.run {
-            if (mIsTouched){
+            if (mIsTouched) {
                 mTitles.forEachIndexed { index, title ->
                     mPaint.run {
                         textSize = when (index) {
@@ -160,6 +162,7 @@ class TabLayoutTitle @JvmOverloads constructor(
                                 if (mAnimMode == ANIM_MODE_START) {
                                     textAlign = Paint.Align.LEFT
                                 }
+                                color = mTextNormalColor
                                 when {
                                     Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
                                     mPosition == mTouchPosition -> mTextNormalSize.toFloat()
@@ -170,6 +173,7 @@ class TabLayoutTitle @JvmOverloads constructor(
                                 if (mAnimMode == ANIM_MODE_START) {
                                     textAlign = Paint.Align.RIGHT
                                 }
+                                color = mTextSelectColor
                                 when {
                                     Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
                                     mPosition == mTouchPosition -> mTextSelectSize.toFloat()
@@ -178,14 +182,19 @@ class TabLayoutTitle @JvmOverloads constructor(
                             }
                             else -> {
                                 textAlign = Paint.Align.CENTER
+                                color = mTextNormalColor
                                 mTextNormalSize.toFloat()
                             }
                         }
                     }
-                    drawText(title, mItemWith * index + mItemWith / 2.toFloat(), height / 2 + mPaint.fontMetrics.bottom, mPaint
-                   )
+                    drawText(
+                        title,
+                        mItemWith * index + mItemWith / 2.toFloat(),
+                        height / 2 + mPaint.fontMetrics.bottom,
+                        mPaint
+                    )
                 }
-            }else{
+            } else {
                 mTitles.forEachIndexed { index, title ->
                     mPaint.run {
                         textSize = when (index) {
@@ -193,21 +202,29 @@ class TabLayoutTitle @JvmOverloads constructor(
                                 if (mAnimMode == ANIM_MODE_START) {
                                     textAlign = Paint.Align.LEFT
                                 }
+                                color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
                                 mTextSelectSize - mDiffSize * mPositionOffset
                             }
                             mPosition + 1 -> {
                                 if (mAnimMode == ANIM_MODE_START) {
                                     textAlign = Paint.Align.RIGHT
                                 }
+                                color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
                                 mTextNormalSize + mDiffSize * mPositionOffset
                             }
                             else -> {
                                 textAlign = Paint.Align.CENTER
+                                color = mTextNormalColor
                                 mTextNormalSize.toFloat()
                             }
                         }
                     }
-                    drawText(title, mItemWith * index + mItemWith / 2.toFloat(), height / 2 + mPaint.fontMetrics.bottom, mPaint)
+                    drawText(
+                        title,
+                        mItemWith * index + mItemWith / 2.toFloat(),
+                        height / 2 + mPaint.fontMetrics.bottom,
+                        mPaint
+                    )
                 }
             }
         }

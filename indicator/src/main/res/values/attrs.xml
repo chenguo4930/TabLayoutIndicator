@@ -2,7 +2,8 @@
 <resources>
     <!--自定义TabTitle-->
     <declare-styleable name="TabLayoutTitle">
-        <attr name="title_color" format="color|reference"/>
+        <attr name="title_normal_color" format="color|reference"/>
+        <attr name="title_select_color" format="color|reference"/>
         <attr name="title_is_Bold" format="boolean"/>
         <attr name="title_text_normal_size" format="integer"/>
         <attr name="title_text_select_size" format="integer"/>

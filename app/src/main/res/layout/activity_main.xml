@@ -13,7 +13,8 @@
             android:layout_width="188dp"
             android:layout_height="48dp"
             android:background="@color/color_white"
-            app:title_color="@color/color_12131A"
+            app:title_normal_color="@color/color_5d5d60"
+            app:title_select_color="@color/color_12131A"
             app:title_text_normal_size="15"
             app:title_text_select_size="21"
             app:title_anim_mode="MIDDLE"/>

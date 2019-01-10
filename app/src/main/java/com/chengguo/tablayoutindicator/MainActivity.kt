@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity() {
         tabLayout.setupWithViewPager(viewPager)
         tab_layout_title.mViewPager = viewPager
         tabLayoutIndicator0.mViewPager = viewPager
-        tabLayoutIndicator1.mViewPager = viewPager
-        tabLayoutIndicator2.mViewPager = viewPager
-        tabLayoutIndicator3.mViewPager = viewPager
-        tabLayoutIndicator4.mViewPager = viewPager
+//        tabLayoutIndicator1.mViewPager = viewPager
+//        tabLayoutIndicator2.mViewPager = viewPager
+//        tabLayoutIndicator3.mViewPager = viewPager
+//        tabLayoutIndicator4.mViewPager = viewPager
     }
 
     private fun getFragmentPages(): List<FragmentPage> =
