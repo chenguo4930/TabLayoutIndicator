@@ -6,7 +6,7 @@
 ```
 dependencies {
     ...
-    compile 'com.cheng:ViewPagerIndicator:1.0.3'
+    compile 'com.cheng:ViewPagerIndicator:1.0.4'
 }
 ```
 
