@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.support.v4.view.ViewPager
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
@@ -35,6 +36,11 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
          * 颜色改变的阈值
          */
         const val COLOR_CHANGE_THRESHOLD = 0.5f
+
+        /**
+         * 将整个title分成多少份
+         */
+        const val TITLE_POINT = 4
     }
 
     /**
@@ -48,6 +54,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
     private var mPositionOffset = 0f
     private var mTotalTabCount = 1
     private var mItemWith = 0
+    private var mPointWith = 0
     /**
      * 文字普通大小（px）
      * 文字选中大小（px）
@@ -100,6 +107,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    Log.e("-------","-------position=$position-----positionOffset=$positionOffset--------")
                     mPosition = position
                     mPositionOffset = positionOffset
                     invalidate()
@@ -142,6 +150,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
         if (mItemWith == 0 && mTitles.isNullOrEmpty().not()) {
             //说明还没有进行初始化
             mItemWith = width / mTitles.size
+            mPointWith = width / TITLE_POINT
         }
     }
 
@@ -155,13 +164,11 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
         super.onDraw(canvas)
         canvas?.run {
             if (mIsTouched) {
+                //手动点击
                 mTitles.forEachIndexed { index, title ->
                     mPaint.run {
                         textSize = when (index) {
                             mTouchBeforePosition -> {
-                                if (mAnimMode == ANIM_MODE_START) {
-                                    textAlign = Paint.Align.LEFT
-                                }
                                 color = mTextNormalColor
                                 when {
                                     Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
@@ -170,9 +177,6 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                                 }
                             }
                             mTouchPosition -> {
-                                if (mAnimMode == ANIM_MODE_START) {
-                                    textAlign = Paint.Align.RIGHT
-                                }
                                 color = mTextSelectColor
                                 when {
                                     Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
@@ -195,36 +199,68 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                     )
                 }
             } else {
-                mTitles.forEachIndexed { index, title ->
-                    mPaint.run {
-                        textSize = when (index) {
-                            mPosition -> {
-                                if (mAnimMode == ANIM_MODE_START) {
-                                    textAlign = Paint.Align.LEFT
+                //自动滑动
+                if (mAnimMode == ANIM_MODE_START) {
+                    var startX: Float
+                    //波浪起伏模式  ANIM_MODE_START
+                    mTitles.forEachIndexed { index, title ->
+                        mPaint.run {
+                            textSize = when (index) {
+                                mPosition -> {
+                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
+                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    mTextSelectSize - mDiffSize * mPositionOffset
                                 }
-                                color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
-                                mTextSelectSize - mDiffSize * mPositionOffset
-                            }
-                            mPosition + 1 -> {
-                                if (mAnimMode == ANIM_MODE_START) {
-                                    textAlign = Paint.Align.RIGHT
+                                mPosition + 1 -> {
+                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
+                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    mTextNormalSize + mDiffSize * mPositionOffset
                                 }
-                                color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
-                                mTextNormalSize + mDiffSize * mPositionOffset
-                            }
-                            else -> {
-                                textAlign = Paint.Align.CENTER
-                                color = mTextNormalColor
-                                mTextNormalSize.toFloat()
+                                else -> {
+                                    val index1 = if (index < mPosition) index else index + 1
+                                    startX = mPointWith / 2.toFloat() + mPointWith * index1
+                                    color = mTextNormalColor
+                                    mTextNormalSize.toFloat()
+                                }
                             }
                         }
+                        drawText(
+                            title,
+                            startX,
+                            height / 2 + mPaint.fontMetrics.bottom,
+                            mPaint
+                        )
                     }
-                    drawText(
-                        title,
-                        mItemWith * index + mItemWith / 2.toFloat(),
-                        height / 2 + mPaint.fontMetrics.bottom,
-                        mPaint
-                    )
+
+                } else {
+                    //居中放大模式  ANIM_MODE_MIDDLE
+                    mTitles.forEachIndexed { index, title ->
+                        mPaint.run {
+                            textSize = when (index) {
+                                mPosition -> {
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    mTextSelectSize - mDiffSize * mPositionOffset
+                                }
+                                mPosition + 1 -> {
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    mTextNormalSize + mDiffSize * mPositionOffset
+                                }
+                                else -> {
+                                    textAlign = Paint.Align.CENTER
+                                    color = mTextNormalColor
+                                    mTextNormalSize.toFloat()
+                                }
+                            }
+                        }
+                        drawText(
+                            title,
+                            mItemWith * index + mItemWith / 2.toFloat(),
+                            height / 2 + mPaint.fontMetrics.bottom,
+                            mPaint
+                        )
+                    }
                 }
             }
         }
