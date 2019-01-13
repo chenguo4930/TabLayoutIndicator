@@ -208,45 +208,75 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
             if (mIsTouched) {
                 //手动点击
                 if (mAnimMode == ANIM_MODE_START) {
-                    var startX: Float = 0f
+                    var startX: Float
+//                    mTitles.forEachIndexed { index, title ->
+//                        mPaint.run {
+//                            textSize = when (index) {
+//                                mTouchBeforePosition -> {
+//                                    color = mTextNormalColor
+//                                    when {
+//                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
+//                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
+//                                            mTextSelectSize.toFloat()
+//                                        }
+//                                        mPosition == mTouchPosition -> {
+//                                            val index1 = if (index < mPosition) index else index + 1
+//                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
+//                                            mTextNormalSize.toFloat()
+//                                        }
+//                                        else -> {
+//                                            startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
+//                                            mTextSelectSize - mDiffSize * mPositionOffset
+//                                        }
+//                                    }
+//                                }
+//                                mTouchPosition -> {
+//                                    color = mTextSelectColor
+//                                    when {
+//                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
+//                                            val index1 = if (index < mPosition) index else index + 1
+//                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
+//                                            mTextNormalSize.toFloat()
+//                                        }
+//                                        mPosition == mTouchPosition -> {
+//                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
+//                                            mTextSelectSize.toFloat()
+//                                        }
+//                                        else -> {
+//                                            startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
+//                                            mTextNormalSize + mDiffSize * mPositionOffset
+//                                        }
+//                                    }
+//                                }
+//                                else -> {
+//                                    val index1 = if (index < mPosition) index else index + 1
+//                                    startX = mPointWith / 2.toFloat() + mPointWith * index1
+//                                    color = mTextNormalColor
+//                                    mTextNormalSize.toFloat()
+//                                }
+//                            }
+//                        }
+//                        drawText(
+//                            title,
+//                            startX,
+//                            height / 2 + mPaint.fontMetrics.bottom,
+//                            mPaint
+//                        )
+//                    }
+
+                    //波浪起伏模式  ANIM_MODE_START
                     mTitles.forEachIndexed { index, title ->
                         mPaint.run {
                             textSize = when (index) {
-                                mTouchBeforePosition -> {
-                                    color = mTextNormalColor
-                                    when {
-                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
-                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
-                                            mTextSelectSize.toFloat()
-                                        }
-                                        mPosition == mTouchPosition -> {
-                                            val index1 = if (index < mPosition) index else index + 1
-                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
-                                            mTextNormalSize.toFloat()
-                                        }
-                                        else -> {
-                                            startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
-                                            mTextSelectSize - mDiffSize * mPositionOffset
-                                        }
-                                    }
+                                mPosition -> {
+                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
+                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    mTextSelectSize - mDiffSize * mPositionOffset
                                 }
-                                mTouchPosition -> {
-                                    color = mTextSelectColor
-                                    when {
-                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
-                                            val index1 = if (index < mPosition) index else index + 1
-                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
-                                            mTextNormalSize.toFloat()
-                                        }
-                                        mPosition == mTouchPosition -> {
-                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
-                                            mTextSelectSize.toFloat()
-                                        }
-                                        else -> {
-                                            startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
-                                            mTextNormalSize + mDiffSize * mPositionOffset
-                                        }
-                                    }
+                                mPosition + 1 -> {
+                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
+                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    mTextNormalSize + mDiffSize * mPositionOffset
                                 }
                                 else -> {
                                     val index1 = if (index < mPosition) index else index + 1
