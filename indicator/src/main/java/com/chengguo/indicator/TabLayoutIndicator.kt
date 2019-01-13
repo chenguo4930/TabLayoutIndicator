@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
@@ -106,7 +105,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
         mMarginLeft = mItemWith / 2 - mIndicatorWidth / 2
         mPaint.strokeWidth = height.toFloat()
         if (mIndicatorDrawable != null) {
-            mIndicatorBitmap = drawableToBitmap(mIndicatorDrawable!!, mIndicatorWidth.toInt(), measuredHeight)
+            mIndicatorBitmap = Util.drawableToBitmap(mIndicatorDrawable!!, mIndicatorWidth.toInt(), measuredHeight)
             mBitmapPaint = Paint().apply {
                 style = Paint.Style.FILL
                 isAntiAlias = true
@@ -150,7 +149,7 @@ class TabLayoutIndicator @JvmOverloads constructor(
                 }
             }
             if (mIndicatorBitmap != null) {
-                mIndicatorBitmap = drawableToBitmap(mIndicatorDrawable!!, (endX - startX).toInt(), measuredHeight)
+                mIndicatorBitmap = Util.drawableToBitmap(mIndicatorDrawable!!, (endX - startX).toInt(), measuredHeight)
                 canvas?.drawBitmap(mIndicatorBitmap!!, startX, 0f, mBitmapPaint)
             } else {
                 canvas?.drawLine(startX, height / 2.toFloat(), endX, height / 2.toFloat(), mPaint)
@@ -193,17 +192,6 @@ class TabLayoutIndicator @JvmOverloads constructor(
     private fun dp2px(context: Context, dpValue: Float): Float {
         val scale = context.resources.displayMetrics.density
         return dpValue * scale + 0.5f
-    }
-
-    private fun drawableToBitmap(drawable: Drawable, width: Int, height: Int): Bitmap {
-        if (drawable is BitmapDrawable) {
-            return drawable.bitmap
-        }
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
     }
 
 }

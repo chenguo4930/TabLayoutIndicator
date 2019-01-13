@@ -2,8 +2,10 @@ package com.chengguo.indicator
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.support.v4.view.ViewPager
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -37,10 +39,6 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
          */
         const val COLOR_CHANGE_THRESHOLD = 0.5f
 
-        /**
-         * 将整个title分成多少份
-         */
-        const val TITLE_POINT = 4
     }
 
     /**
@@ -90,6 +88,21 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
      */
     private var mIsTouched = false
 
+    /**
+     * 指示器的宽度和颜色
+     */
+    private var mIndicatorWidth = 0f
+    private var mIndicatorHeight = 2f
+    private var mIndicatorColor: Int = 0x9f6def
+    private val mIndicatorPaint = Paint()
+    private var mIndicatorMarginLeft = 0f
+    /**
+     * 设置了drawable就回执drawable，否则就绘制线条
+     */
+    private var mIndicatorDrawable: Drawable? = null
+    private var mBitmapPaint: Paint? = null
+    private var mIndicatorBitmap: Bitmap? = null
+
     var mViewPager: ViewPager? = null
         set(value) {
             field = value
@@ -107,7 +120,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                    Log.e("-------","-------position=$position-----positionOffset=$positionOffset--------")
+                    Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
                     mPosition = position
                     mPositionOffset = positionOffset
                     invalidate()
@@ -121,12 +134,18 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
     init {
         if (attrs != null) {
             val attrsArray = getContext().obtainStyledAttributes(attrs, R.styleable.TabLayoutTitle)
+            //-----------------title--------------
             mTextNormalColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_normal_color, DEFAULT_COLOR)
             mTextSelectColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_select_color, DEFAULT_COLOR)
             mTextNormalSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_normal_size, DEFAULT_NORMAL_SIZE)
             mTextSelectSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_select_size, DEFAULT_NORMAL_SIZE)
             mIsBoldText = attrsArray.getBoolean(R.styleable.TabLayoutTitle_title_is_Bold, false)
             mAnimMode = attrsArray.getInt(R.styleable.TabLayoutTitle_title_anim_mode, ANIM_MODE_MIDDLE)
+            //-----------------indicator-------------
+            mIndicatorWidth = attrsArray.getDimension(R.styleable.TabLayoutTitle_title_indicator_width, 20f)
+            mIndicatorHeight = attrsArray.getDimension(R.styleable.TabLayoutTitle_title_indicator_height, 2f)
+            mIndicatorColor = attrsArray.getColor(R.styleable.TabLayoutTitle_title_indicator_color, 0x9f6def)
+            mIndicatorDrawable = attrsArray.getDrawable(R.styleable.TabLayoutTitle_title_indicator_drawable)
             attrsArray.recycle()
         }
 
@@ -141,16 +160,39 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
             textAlign = Paint.Align.CENTER
         }
 
+
         mTextNormalSize = dp2px(mTextNormalSize).toInt()
         mTextSelectSize = dp2px(mTextSelectSize).toInt()
         mDiffSize = mTextSelectSize - mTextNormalSize
+
+        //---------indicator-----------------
+        mIndicatorPaint.run {
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+            strokeWidth = mIndicatorHeight
+            color = mIndicatorColor
+        }
+
     }
 
     private fun initItemWidth() {
         if (mItemWith == 0 && mTitles.isNullOrEmpty().not()) {
             //说明还没有进行初始化
             mItemWith = width / mTitles.size
-            mPointWith = width / TITLE_POINT
+            mPointWith = width / (mTitles.size + 1)
+
+            mIndicatorMarginLeft = mPointWith - mIndicatorWidth / 2
+
+            if (mIndicatorDrawable != null) {
+                mIndicatorBitmap =
+                        Util.drawableToBitmap(mIndicatorDrawable!!, mIndicatorWidth.toInt(), mIndicatorHeight.toInt())
+                mBitmapPaint = Paint().apply {
+                    style = Paint.Style.FILL
+                    isAntiAlias = true
+                }
+            }
+
         }
     }
 
@@ -165,38 +207,109 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
         canvas?.run {
             if (mIsTouched) {
                 //手动点击
-                mTitles.forEachIndexed { index, title ->
-                    mPaint.run {
-                        textSize = when (index) {
-                            mTouchBeforePosition -> {
-                                color = mTextNormalColor
-                                when {
-                                    Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
-                                    mPosition == mTouchPosition -> mTextNormalSize.toFloat()
-                                    else -> mTextSelectSize - mDiffSize * mPositionOffset
+                if (mAnimMode == ANIM_MODE_START) {
+                    var startX: Float = 0f
+                    mTitles.forEachIndexed { index, title ->
+                        mPaint.run {
+                            textSize = when (index) {
+                                mTouchBeforePosition -> {
+                                    color = mTextNormalColor
+                                    when {
+                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
+                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
+                                            mTextSelectSize.toFloat()
+                                        }
+                                        mPosition == mTouchPosition -> {
+                                            val index1 = if (index < mPosition) index else index + 1
+                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
+                                            mTextNormalSize.toFloat()
+                                        }
+                                        else -> {
+                                            startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
+                                            mTextSelectSize - mDiffSize * mPositionOffset
+                                        }
+                                    }
                                 }
-                            }
-                            mTouchPosition -> {
-                                color = mTextSelectColor
-                                when {
-                                    Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
-                                    mPosition == mTouchPosition -> mTextSelectSize.toFloat()
-                                    else -> mTextNormalSize + mDiffSize * mPositionOffset
+                                mTouchPosition -> {
+                                    color = mTextSelectColor
+                                    when {
+                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
+                                            val index1 = if (index < mPosition) index else index + 1
+                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
+                                            mTextNormalSize.toFloat()
+                                        }
+                                        mPosition == mTouchPosition -> {
+                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
+                                            mTextSelectSize.toFloat()
+                                        }
+                                        else -> {
+                                            startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
+                                            mTextNormalSize + mDiffSize * mPositionOffset
+                                        }
+                                    }
                                 }
-                            }
-                            else -> {
-                                textAlign = Paint.Align.CENTER
-                                color = mTextNormalColor
-                                mTextNormalSize.toFloat()
+                                else -> {
+                                    val index1 = if (index < mPosition) index else index + 1
+                                    startX = mPointWith / 2.toFloat() + mPointWith * index1
+                                    color = mTextNormalColor
+                                    mTextNormalSize.toFloat()
+                                }
                             }
                         }
+                        drawText(
+                            title,
+                            startX,
+                            height / 2 + mPaint.fontMetrics.bottom,
+                            mPaint
+                        )
                     }
-                    drawText(
-                        title,
-                        mItemWith * index + mItemWith / 2.toFloat(),
-                        height / 2 + mPaint.fontMetrics.bottom,
-                        mPaint
-                    )
+
+                    //---------------draw Indicator-------------
+                    val indicatorStartX = mPointWith * mPosition + mIndicatorMarginLeft + mPointWith * mPositionOffset
+                    if (mIndicatorBitmap != null) {
+                        drawBitmap(mIndicatorBitmap!!, indicatorStartX, height - mIndicatorHeight, mBitmapPaint)
+                    } else {
+                        drawLine(
+                            indicatorStartX,
+                            height - mIndicatorHeight / 2,
+                            indicatorStartX + mIndicatorWidth,
+                            height - mIndicatorHeight / 2,
+                            mIndicatorPaint
+                        )
+                    }
+                } else {
+                    mTitles.forEachIndexed { index, title ->
+                        mPaint.run {
+                            textSize = when (index) {
+                                mTouchBeforePosition -> {
+                                    color = mTextNormalColor
+                                    when {
+                                        Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
+                                        mPosition == mTouchPosition -> mTextNormalSize.toFloat()
+                                        else -> mTextSelectSize - mDiffSize * mPositionOffset
+                                    }
+                                }
+                                mTouchPosition -> {
+                                    color = mTextSelectColor
+                                    when {
+                                        Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
+                                        mPosition == mTouchPosition -> mTextSelectSize.toFloat()
+                                        else -> mTextNormalSize + mDiffSize * mPositionOffset
+                                    }
+                                }
+                                else -> {
+                                    color = mTextNormalColor
+                                    mTextNormalSize.toFloat()
+                                }
+                            }
+                        }
+                        drawText(
+                            title,
+                            mItemWith * index + mItemWith / 2.toFloat(),
+                            height / 2 + mPaint.fontMetrics.bottom,
+                            mPaint
+                        )
+                    }
                 }
             } else {
                 //自动滑动
@@ -232,6 +345,20 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                         )
                     }
 
+                    //---------------draw Indicator-------------
+                    val indicatorStartX = mPointWith * mPosition + mIndicatorMarginLeft + mPointWith * mPositionOffset
+                    if (mIndicatorBitmap != null) {
+                        drawBitmap(mIndicatorBitmap!!, indicatorStartX, height - mIndicatorHeight, mBitmapPaint)
+                    } else {
+                        drawLine(
+                            indicatorStartX,
+                            height - mIndicatorHeight / 2,
+                            indicatorStartX + mIndicatorWidth,
+                            height - mIndicatorHeight / 2,
+                            mIndicatorPaint
+                        )
+                    }
+
                 } else {
                     //居中放大模式  ANIM_MODE_MIDDLE
                     mTitles.forEachIndexed { index, title ->
@@ -248,7 +375,6 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                                     mTextNormalSize + mDiffSize * mPositionOffset
                                 }
                                 else -> {
-                                    textAlign = Paint.Align.CENTER
                                     color = mTextNormalColor
                                     mTextNormalSize.toFloat()
                                 }
@@ -280,7 +406,15 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
             MotionEvent.ACTION_DOWN -> {
                 mTouchBeforePosition = mViewPager?.currentItem ?: DEFAULT_TOUCH_POSITION
                 // 根据手指点击的范围，确定当前点击的第几个title
-                mTouchPosition = (event.x / mItemWith).toInt()
+                mTouchPosition = if (mAnimMode == ANIM_MODE_START) {
+                    when {
+                        (mTouchBeforePosition + 2) * mPointWith < event.x -> (event.x / mPointWith).toInt() - 1
+                        (mTouchBeforePosition + 2) * mPointWith > event.x -> (event.x / mPointWith).toInt()
+                        else -> mTouchBeforePosition
+                    }
+                } else {
+                    (event.x / mItemWith).toInt()
+                }
 
                 mIsTouched = true
                 mViewPager?.currentItem = mTouchPosition
