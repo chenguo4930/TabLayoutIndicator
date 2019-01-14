@@ -17,8 +17,7 @@
             app:title_select_color="@color/color_12131A"
             app:title_text_normal_size="15"
             app:title_text_select_size="21"
-            app:title_anim_mode="MIDDLE"
-            app:title_is_Bold="true"/>
+            app:title_anim_mode="MIDDLE"/>
 
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator0"
@@ -39,9 +38,9 @@
             app:title_text_normal_size="15"
             app:title_text_select_size="21"
             app:title_anim_mode="START"
-            app:title_indicator_drawable="@drawable/indicator_shape"
+            app:title_indicator_color="@color/color_8B76F9"
             app:title_indicator_height="5dp"
-            app:title_indicator_width="20dp"/>
+            app:title_indicator_width="10dp"/>
 
     <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
