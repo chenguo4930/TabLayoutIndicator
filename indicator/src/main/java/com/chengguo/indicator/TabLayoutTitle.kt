@@ -122,7 +122,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                    Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
+//                    Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
                     mPosition = position
                     mPositionOffset = when {
                         positionOffset > 0.99 -> 1f
