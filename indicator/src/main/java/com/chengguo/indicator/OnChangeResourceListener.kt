@@ -11,7 +11,8 @@ interface OnChangeResourceListener {
     }
 
     /**
-     * 标题变化的来源，点击/viewPager changeListener
+     * @param resource 标题变化的来源，点击/viewPager changeListener
+     * @param position 最终的位置
      */
-    fun clickResource(resource: Int)
+    fun clickResource(resource: Int,position:Int)
 }

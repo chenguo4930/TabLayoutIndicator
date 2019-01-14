@@ -126,9 +126,9 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         //ViewPager停止了滑动
                         if (mIsTouched) {
-                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_CLICK)
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_CLICK, mViewPager?.currentItem ?: DEFAULT_TOUCH_POSITION)
                         } else {
-                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_VIEW_PAGER)
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_VIEW_PAGER, mViewPager?.currentItem ?: DEFAULT_TOUCH_POSITION)
                         }
                         mIsTouched = false
                     }

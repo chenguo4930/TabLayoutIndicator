@@ -32,9 +32,9 @@ class MainActivity : AppCompatActivity() {
         tabLayoutIndicator0.mViewPager = viewPager
         tabLayoutIndicator1.mViewPager = viewPager
 
-        tab_layout_title.changeResourceListener = object :OnChangeResourceListener{
-            override fun clickResource(resource: Int) {
-               Log.e("-------","---------resource= $resource-----------")
+        tab_layout_title.changeResourceListener = object : OnChangeResourceListener {
+            override fun clickResource(resource: Int, position: Int) {
+                Log.e("-------", "---------resource= $resource------position=$position-----")
             }
         }
 //        tabLayoutIndicator2.mViewPager = viewPager
