@@ -22,7 +22,11 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = viewPageAdapter
         tabLayout.setupWithViewPager(viewPager)
         tab_layout_title.mViewPager = viewPager
-        tab_layout_title1.mViewPager = viewPager
+        tab_layout_title2.mViewPager = viewPager
+        tab_layout_title3.mViewPager = viewPager
+        tab_layout_title4.mViewPager = viewPager
+        tab_layout_title5.mViewPager = viewPager
+        tab_layout_title6.mViewPager = viewPager
         tabLayoutIndicator0.mViewPager = viewPager
         tabLayoutIndicator1.mViewPager = viewPager
 //        tabLayoutIndicator2.mViewPager = viewPager

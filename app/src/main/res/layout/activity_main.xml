@@ -19,6 +19,30 @@
             app:title_text_select_size="21"
             app:title_anim_mode="MIDDLE"/>
 
+    <com.chengguo.indicator.TabLayoutTitle
+            android:id="@+id/tab_layout_title3"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/color_white"
+            app:title_normal_color="@color/color_858587"
+            app:title_select_color="@color/color_12131A"
+            app:title_text_normal_size="15"
+            app:title_text_select_size="21"
+            app:title_only_select_Bold="true"
+            app:title_anim_mode="MIDDLE"/>
+
+    <com.chengguo.indicator.TabLayoutTitle
+            android:id="@+id/tab_layout_title2"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/color_white"
+            app:title_normal_color="@color/color_858587"
+            app:title_select_color="@color/color_12131A"
+            app:title_text_normal_size="15"
+            app:title_text_select_size="21"
+            app:title_is_Bold="true"
+            app:title_anim_mode="MIDDLE"/>
+
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator0"
             android:background="#ffffff"
@@ -29,7 +53,7 @@
             app:indicator_match_title_width="true"/>
 
     <com.chengguo.indicator.TabLayoutTitle
-            android:id="@+id/tab_layout_title1"
+            android:id="@+id/tab_layout_title4"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/color_white"
@@ -41,6 +65,36 @@
             app:title_indicator_color="@color/color_8B76F9"
             app:title_indicator_height="5dp"
             app:title_indicator_width="10dp"/>
+
+    <com.chengguo.indicator.TabLayoutTitle
+            android:id="@+id/tab_layout_title5"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/color_white"
+            app:title_normal_color="@color/color_858587"
+            app:title_select_color="@color/color_12131A"
+            app:title_text_normal_size="15"
+            app:title_text_select_size="21"
+            app:title_anim_mode="START"
+            app:title_indicator_color="@color/color_8B76F9"
+            app:title_indicator_height="5dp"
+            app:title_indicator_width="10dp"
+            app:title_only_select_Bold="true"/>
+
+    <com.chengguo.indicator.TabLayoutTitle
+            android:id="@+id/tab_layout_title6"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/color_white"
+            app:title_normal_color="@color/color_858587"
+            app:title_select_color="@color/color_12131A"
+            app:title_text_normal_size="15"
+            app:title_text_select_size="21"
+            app:title_anim_mode="START"
+            app:title_indicator_color="@color/color_8B76F9"
+            app:title_indicator_height="5dp"
+            app:title_indicator_width="10dp"
+            app:title_is_Bold="true"/>
 
     <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
