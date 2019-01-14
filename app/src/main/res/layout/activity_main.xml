@@ -10,7 +10,7 @@
 
     <com.chengguo.indicator.TabLayoutTitle
             android:id="@+id/tab_layout_title"
-            android:layout_width="188dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/color_white"
             app:title_normal_color="@color/color_858587"
@@ -20,9 +20,18 @@
             app:title_anim_mode="MIDDLE"
             app:title_is_Bold="true"/>
 
+    <com.chengguo.indicator.TabLayoutIndicator
+            android:id="@+id/tabLayoutIndicator0"
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            app:indicator_can_anim="true"
+            app:indicator_color="@color/color_8B76F9"
+            app:indicator_match_title_width="true"/>
+
     <com.chengguo.indicator.TabLayoutTitle
             android:id="@+id/tab_layout_title1"
-            android:layout_width="188dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/color_white"
             app:title_normal_color="@color/color_858587"
@@ -33,15 +42,6 @@
             app:title_indicator_drawable="@drawable/indicator_shape"
             app:title_indicator_height="5dp"
             app:title_indicator_width="20dp"/>
-
-    <com.chengguo.indicator.TabLayoutIndicator
-            android:id="@+id/tabLayoutIndicator0"
-            android:background="#ffffff"
-            android:layout_width="188dp"
-            android:layout_height="6dp"
-            app:indicator_can_anim="true"
-            app:indicator_color="@color/color_8B76F9"
-            app:indicator_match_title_width="true"/>
 
     <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
