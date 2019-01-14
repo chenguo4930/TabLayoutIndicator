@@ -2,6 +2,8 @@ package com.chengguo.tablayoutindicator
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import com.chengguo.indicator.OnChangeResourceListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +31,12 @@ class MainActivity : AppCompatActivity() {
         tab_layout_title6.mViewPager = viewPager
         tabLayoutIndicator0.mViewPager = viewPager
         tabLayoutIndicator1.mViewPager = viewPager
+
+        tab_layout_title.changeResourceListener = object :OnChangeResourceListener{
+            override fun clickResource(resource: Int) {
+               Log.e("-------","---------resource= $resource-----------")
+            }
+        }
 //        tabLayoutIndicator2.mViewPager = viewPager
 //        tabLayoutIndicator3.mViewPager = viewPager
 //        tabLayoutIndicator4.mViewPager = viewPager

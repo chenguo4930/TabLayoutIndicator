@@ -108,6 +108,10 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
     private var mIndicatorDrawable: Drawable? = null
     private var mBitmapPaint: Paint? = null
     private var mIndicatorBitmap: Bitmap? = null
+    /**
+     * title变化的方式
+     */
+    var changeResourceListener: OnChangeResourceListener? = null
 
     var mViewPager: ViewPager? = null
         set(value) {
@@ -121,6 +125,11 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                 override fun onPageScrollStateChanged(state: Int) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         //ViewPager停止了滑动
+                        if (mIsTouched) {
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_CLICK)
+                        } else {
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_VIEW_PAGER)
+                        }
                         mIsTouched = false
                     }
                 }
