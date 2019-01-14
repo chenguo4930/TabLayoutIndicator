@@ -125,8 +125,8 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                     Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
                     mPosition = position
                     mPositionOffset = when {
-                        positionOffset > 1.0 -> 1f
-                        positionOffset < 0 -> 0f
+                        positionOffset > 0.99 -> 1f
+                        positionOffset < 0.01 -> 0f
                         else -> positionOffset
                     }
                     invalidate()
@@ -273,7 +273,15 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                                     when {
                                         Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
                                         mPosition == mTouchPosition -> mTextNormalSize.toFloat()
-                                        else -> mTextSelectSize - mDiffSize * mPositionOffset
+                                        else -> {
+                                            if (mTouchPosition > mTouchBeforePosition){
+                                                //向右
+                                                mTextSelectSize - mDiffSize * mPositionOffset
+                                            }else{
+                                                //向左
+                                                mTextNormalSize + mDiffSize * mPositionOffset
+                                            }
+                                        }
                                     }
                                 }
                                 mTouchPosition -> {
@@ -281,7 +289,15 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                                     when {
                                         Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
                                         mPosition == mTouchPosition -> mTextSelectSize.toFloat()
-                                        else -> mTextNormalSize + mDiffSize * mPositionOffset
+                                        else ->{
+                                            if (mTouchPosition > mTouchBeforePosition){
+                                                //向右
+                                                mTextNormalSize + mDiffSize * mPositionOffset
+                                            }else{
+                                                //向左
+                                                mTextSelectSize - mDiffSize * mPositionOffset
+                                            }
+                                        }
                                     }
                                 }
                                 else -> {
