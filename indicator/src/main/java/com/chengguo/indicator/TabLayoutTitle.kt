@@ -6,12 +6,14 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import com.chengguo.indicator.TabLayoutTitle.Companion.ANIM_MODE_START
+import com.chengguo.indicator.TabLayoutTitle.Companion.DEFAULT_TOUCH_POSITION
 
 /**
  * 自定义tab导航title
@@ -72,6 +74,10 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
      */
     private var mIsBoldText = false
     /**
+     * 是否只有选中的为粗体
+     */
+    private var mOnlySelectBoldText = false
+    /**
      * 标题
      */
     private val mTitles: MutableList<String> = ArrayList()
@@ -102,6 +108,10 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
     private var mIndicatorDrawable: Drawable? = null
     private var mBitmapPaint: Paint? = null
     private var mIndicatorBitmap: Bitmap? = null
+    /**
+     * title变化的方式
+     */
+    var changeResourceListener: OnChangeResourceListener? = null
 
     var mViewPager: ViewPager? = null
         set(value) {
@@ -115,14 +125,23 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                 override fun onPageScrollStateChanged(state: Int) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         //ViewPager停止了滑动
+                        if (mIsTouched) {
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_CLICK, mViewPager?.currentItem ?: DEFAULT_TOUCH_POSITION)
+                        } else {
+                            changeResourceListener?.clickResource(OnChangeResourceListener.CHANGE_VIEW_PAGER, mViewPager?.currentItem ?: DEFAULT_TOUCH_POSITION)
+                        }
                         mIsTouched = false
                     }
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                    Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
+//                    Log.e("-------", "-------position=$position-----positionOffset=$positionOffset--------")
                     mPosition = position
-                    mPositionOffset = positionOffset
+                    mPositionOffset = when {
+                        positionOffset > 0.99 -> 1f
+                        positionOffset < 0.01 -> 0f
+                        else -> positionOffset
+                    }
                     invalidate()
                 }
 
@@ -140,6 +159,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
             mTextNormalSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_normal_size, DEFAULT_NORMAL_SIZE)
             mTextSelectSize = attrsArray.getInt(R.styleable.TabLayoutTitle_title_text_select_size, DEFAULT_NORMAL_SIZE)
             mIsBoldText = attrsArray.getBoolean(R.styleable.TabLayoutTitle_title_is_Bold, false)
+            mOnlySelectBoldText = attrsArray.getBoolean(R.styleable.TabLayoutTitle_title_only_select_Bold, false)
             mAnimMode = attrsArray.getInt(R.styleable.TabLayoutTitle_title_anim_mode, ANIM_MODE_MIDDLE)
             //-----------------indicator-------------
             mIndicatorWidth = attrsArray.getDimension(R.styleable.TabLayoutTitle_title_indicator_width, 20f)
@@ -208,80 +228,39 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
             if (mIsTouched) {
                 //手动点击
                 if (mAnimMode == ANIM_MODE_START) {
-                    var startX: Float
-//                    mTitles.forEachIndexed { index, title ->
-//                        mPaint.run {
-//                            textSize = when (index) {
-//                                mTouchBeforePosition -> {
-//                                    color = mTextNormalColor
-//                                    when {
-//                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
-//                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
-//                                            mTextSelectSize.toFloat()
-//                                        }
-//                                        mPosition == mTouchPosition -> {
-//                                            val index1 = if (index < mPosition) index else index + 1
-//                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
-//                                            mTextNormalSize.toFloat()
-//                                        }
-//                                        else -> {
-//                                            startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
-//                                            mTextSelectSize - mDiffSize * mPositionOffset
-//                                        }
-//                                    }
-//                                }
-//                                mTouchPosition -> {
-//                                    color = mTextSelectColor
-//                                    when {
-//                                        Math.abs(mPosition - mTouchPosition) > 1 -> {
-//                                            val index1 = if (index < mPosition) index else index + 1
-//                                            startX = mPointWith / 2.toFloat() + mPointWith * index1
-//                                            mTextNormalSize.toFloat()
-//                                        }
-//                                        mPosition == mTouchPosition -> {
-//                                            startX = (mPointWith+ mPointWith * mPosition).toFloat()
-//                                            mTextSelectSize.toFloat()
-//                                        }
-//                                        else -> {
-//                                            startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
-//                                            mTextNormalSize + mDiffSize * mPositionOffset
-//                                        }
-//                                    }
-//                                }
-//                                else -> {
-//                                    val index1 = if (index < mPosition) index else index + 1
-//                                    startX = mPointWith / 2.toFloat() + mPointWith * index1
-//                                    color = mTextNormalColor
-//                                    mTextNormalSize.toFloat()
-//                                }
-//                            }
-//                        }
-//                        drawText(
-//                            title,
-//                            startX,
-//                            height / 2 + mPaint.fontMetrics.bottom,
-//                            mPaint
-//                        )
-//                    }
 
+                    var startX: Float
                     //波浪起伏模式  ANIM_MODE_START
                     mTitles.forEachIndexed { index, title ->
                         mPaint.run {
                             textSize = when (index) {
                                 mPosition -> {
-                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
-                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith *
+                                            mPosition
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset < COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextSelectSize - mDiffSize * mPositionOffset
                                 }
                                 mPosition + 1 -> {
-                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
-                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith *
+                                            mPosition
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset > COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextNormalSize + mDiffSize * mPositionOffset
                                 }
                                 else -> {
                                     val index1 = if (index < mPosition) index else index + 1
                                     startX = mPointWith / 2.toFloat() + mPointWith * index1
                                     color = mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = false
+                                    }
                                     mTextNormalSize.toFloat()
                                 }
                             }
@@ -293,6 +272,7 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                             mPaint
                         )
                     }
+
 
                     //---------------draw Indicator-------------
                     val indicatorStartX = mPointWith * mPosition + mIndicatorMarginLeft + mPointWith * mPositionOffset
@@ -313,22 +293,47 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                             textSize = when (index) {
                                 mTouchBeforePosition -> {
                                     color = mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = false
+                                    }
                                     when {
                                         Math.abs(mPosition - mTouchPosition) > 1 -> mTextSelectSize.toFloat()
                                         mPosition == mTouchPosition -> mTextNormalSize.toFloat()
-                                        else -> mTextSelectSize - mDiffSize * mPositionOffset
+                                        else -> {
+                                            if (mTouchPosition > mTouchBeforePosition) {
+                                                //向右
+                                                mTextSelectSize - mDiffSize * mPositionOffset
+                                            } else {
+                                                //向左
+                                                mTextNormalSize + mDiffSize * mPositionOffset
+                                            }
+                                        }
                                     }
                                 }
                                 mTouchPosition -> {
                                     color = mTextSelectColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = true
+                                    }
                                     when {
                                         Math.abs(mPosition - mTouchPosition) > 1 -> mTextNormalSize.toFloat()
                                         mPosition == mTouchPosition -> mTextSelectSize.toFloat()
-                                        else -> mTextNormalSize + mDiffSize * mPositionOffset
+                                        else -> {
+                                            if (mTouchPosition > mTouchBeforePosition) {
+                                                //向右
+                                                mTextNormalSize + mDiffSize * mPositionOffset
+                                            } else {
+                                                //向左
+                                                mTextSelectSize - mDiffSize * mPositionOffset
+                                            }
+                                        }
                                     }
                                 }
                                 else -> {
                                     color = mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = false
+                                    }
                                     mTextNormalSize.toFloat()
                                 }
                             }
@@ -350,19 +355,32 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                         mPaint.run {
                             textSize = when (index) {
                                 mPosition -> {
-                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith * mPosition
-                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    startX = (2 * mPointWith - mPointWith * mPositionOffset) / 2 + mPointWith *
+                                            mPosition
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset < COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextSelectSize - mDiffSize * mPositionOffset
                                 }
                                 mPosition + 1 -> {
-                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith * mPosition
-                                    color = if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    startX = mPointWith * 5 / 2 - mPointWith / 2 * mPositionOffset + mPointWith *
+                                            mPosition
+                                    color =
+                                            if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset > COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextNormalSize + mDiffSize * mPositionOffset
                                 }
                                 else -> {
                                     val index1 = if (index < mPosition) index else index + 1
                                     startX = mPointWith / 2.toFloat() + mPointWith * index1
                                     color = mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = false
+                                    }
                                     mTextNormalSize.toFloat()
                                 }
                             }
@@ -397,15 +415,24 @@ class TabLayoutTitle @JvmOverloads constructor(context: Context, attrs: Attribut
                                 mPosition -> {
                                     color =
                                             if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextSelectColor else mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset < COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextSelectSize - mDiffSize * mPositionOffset
                                 }
                                 mPosition + 1 -> {
                                     color =
                                             if (mPositionOffset < COLOR_CHANGE_THRESHOLD) mTextNormalColor else mTextSelectColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = mPositionOffset > COLOR_CHANGE_THRESHOLD
+                                    }
                                     mTextNormalSize + mDiffSize * mPositionOffset
                                 }
                                 else -> {
                                     color = mTextNormalColor
+                                    if (mOnlySelectBoldText) {
+                                        isFakeBoldText = false
+                                    }
                                     mTextNormalSize.toFloat()
                                 }
                             }

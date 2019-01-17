@@ -1,6 +1,6 @@
 package com.chengguo.tablayoutindicator
 
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 
 /**
  * Created by benny on 7/9/17.
