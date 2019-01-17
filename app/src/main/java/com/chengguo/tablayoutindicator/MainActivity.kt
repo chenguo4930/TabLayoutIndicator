@@ -1,7 +1,7 @@
 package com.chengguo.tablayoutindicator
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.chengguo.indicator.OnChangeResourceListener
 import kotlinx.android.synthetic.main.activity_main.*
