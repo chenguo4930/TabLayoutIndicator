@@ -1,8 +1,9 @@
 package com.chengguo.tablayoutindicator
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.TraceCompat
 import com.chengguo.indicator.OnChangeResourceListener
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,9 +15,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        Debug.startMethodTracing("MainActivityCreate")
+        TraceCompat.beginSection("MainActivity" +
+                "OnCreate")
         setContentView(R.layout.activity_main)
-
+//        Debug.stopMethodTracing()
         initViewPager()
+        TraceCompat.endSection()
     }
 
     private fun initViewPager() {
@@ -45,10 +50,6 @@ class MainActivity : AppCompatActivity() {
     private fun getFragmentPages(): List<FragmentPage> =
         listOf(
             FragmentPage(PageFragment(), "关注"),
-            FragmentPage(PageFragment(), "热门"),
-            FragmentPage(PageFragment(), "附近"),
-            FragmentPage(PageFragment(), "关注"),
-            FragmentPage(PageFragment(), "热门"),
             FragmentPage(PageFragment(), "热门"),
             FragmentPage(PageFragment(), "附近")
         )
