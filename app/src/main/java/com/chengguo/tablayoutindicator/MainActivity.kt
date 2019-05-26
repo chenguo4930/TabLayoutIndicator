@@ -16,8 +16,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        Debug.startMethodTracing("MainActivityCreate")
-        TraceCompat.beginSection("MainActivity" +
-                "OnCreate")
+        TraceCompat.beginSection("MainActivityOnCreate")
         setContentView(R.layout.activity_main)
 //        Debug.stopMethodTracing()
         initViewPager()

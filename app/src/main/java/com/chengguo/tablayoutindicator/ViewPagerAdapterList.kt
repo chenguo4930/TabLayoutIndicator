@@ -11,7 +11,6 @@ class ViewPagerAdapterList<T>(val adapter: PagerAdapter): ArrayList<T>(){
     }
 
     override fun remove(element: T): Boolean {
-        val index = indexOf(element)
         return super.remove(element).apply { adapter.notifyDataSetChanged() }
     }
 
