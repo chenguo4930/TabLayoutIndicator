@@ -96,11 +96,42 @@
             app:title_indicator_width="10dp"
             app:title_is_Bold="true"/>
 
-    <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+    <com.chengguo.indicator.TabLayoutTextTitle
+            android:id="@+id/tab_layout_title7"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:tabIndicatorHeight="0dp"/>
+            android:background="@color/color_white"
+            app:text_normal_color="@color/color_858587"
+            app:text_select_color="@color/color_12131A"
+            app:text_normal_size="15"
+            app:text_select_size="21"
+            app:text_margin="10"
+            app:text_only_select_Bold="true"
+            app:text_indicator_color="@color/color_8B76F9"
+            app:text_indicator_height="5dp"
+            app:text_indicator_length_auto_transformation="true"
+            app:text_indicator_width="10dp"/>
+
+    <com.chengguo.indicator.TabLayoutTextTitle
+            android:id="@+id/tab_layout_title8"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/color_white"
+            app:text_normal_color="@color/color_858587"
+            app:text_select_color="@color/color_12131A"
+            app:text_normal_size="15"
+            app:text_select_size="21"
+            app:text_margin="10"
+            app:text_is_Bold="true"
+            app:text_indicator_color="@color/color_8B76F9"
+            app:text_indicator_height="5dp"
+            app:text_indicator_length_auto_transformation="true"
+            app:text_indicator_width="10dp"/>
+
+    <!--<com.google.android.material.tabs.TabLayout-->
+    <!--android:id="@+id/tabLayout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="48dp"/>-->
 
     <com.chengguo.indicator.TabLayoutIndicator
             android:id="@+id/tabLayoutIndicator1"

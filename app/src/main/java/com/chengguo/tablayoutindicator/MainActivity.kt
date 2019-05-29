@@ -26,19 +26,21 @@ class MainActivity : AppCompatActivity() {
     private fun initViewPager() {
         viewPageAdapter.fragmentPages.addAll(getFragmentPages())
         viewPager.adapter = viewPageAdapter
-        tabLayout.setupWithViewPager(viewPager)
+//        tabLayout.setupWithViewPager(viewPager)
         tab_layout_title.mViewPager = viewPager
         tab_layout_title2.mViewPager = viewPager
         tab_layout_title3.mViewPager = viewPager
         tab_layout_title4.mViewPager = viewPager
         tab_layout_title5.mViewPager = viewPager
         tab_layout_title6.mViewPager = viewPager
+        tab_layout_title7.mViewPager = viewPager
+        tab_layout_title8.mViewPager = viewPager
         tabLayoutIndicator0.mViewPager = viewPager
         tabLayoutIndicator1.mViewPager = viewPager
 
         tab_layout_title.changeResourceListener = object : OnChangeResourceListener {
             override fun clickResource(resource: Int, position: Int) {
-                Log.e("-------", "---------resource= $resource------position=$position-----")
+//                Log.e("-------", "---------resource= $resource------position=$position-----")
             }
         }
 //        tabLayoutIndicator2.mViewPager = viewPager
@@ -48,8 +50,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun getFragmentPages(): List<FragmentPage> =
         listOf(
-            FragmentPage(PageFragment(), "关注"),
+            FragmentPage(PageFragment(), "关"),
             FragmentPage(PageFragment(), "热门"),
-            FragmentPage(PageFragment(), "附近")
+            FragmentPage(PageFragment(), "附近的人")
         )
 }
