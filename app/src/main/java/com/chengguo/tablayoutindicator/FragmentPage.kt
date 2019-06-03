@@ -1,5 +1,6 @@
 package com.chengguo.tablayoutindicator
 
-import androidx.fragment.app.Fragment
+import android.support.v4.app.Fragment
+
 
 data class FragmentPage(val fragment: Fragment, val title: String)

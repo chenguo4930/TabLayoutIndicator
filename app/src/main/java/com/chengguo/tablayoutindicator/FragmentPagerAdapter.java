@@ -17,10 +17,10 @@
 package com.chengguo.tablayoutindicator;
 
 import android.os.Parcelable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,11 +99,15 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
         String name = makeFragmentName(container.getId(), itemId);
         Fragment fragment = mFragmentManager.findFragmentByTag(name);
         if (fragment != null) {
-            if (DEBUG) Log.v(TAG, "Attaching item #" + itemId + ": f=" + fragment);
+            if (DEBUG) {
+                Log.v(TAG, "Attaching item #" + itemId + ": f=" + fragment);
+            }
             mCurTransaction.attach(fragment);
         } else {
             fragment = getItem(position);
-            if (DEBUG) Log.v(TAG, "Adding item #" + itemId + ": f=" + fragment);
+            if (DEBUG) {
+                Log.v(TAG, "Adding item #" + itemId + ": f=" + fragment);
+            }
             mCurTransaction.add(container.getId(), fragment,
                     makeFragmentName(container.getId(), itemId));
         }
@@ -120,8 +124,10 @@ public abstract class FragmentPagerAdapter extends PagerAdapter {
         if (mCurTransaction == null) {
             mCurTransaction = mFragmentManager.beginTransaction();
         }
-        if (DEBUG) Log.v(TAG, "Detaching item #" + getItemId(position) + ": f=" + object
-                + " v=" + ((Fragment)object).getView());
+        if (DEBUG) {
+            Log.v(TAG, "Detaching item #" + getItemId(position) + ": f=" + object
+                    + " v=" + ((Fragment)object).getView());
+        }
         if(getItemPosition(object) == PagerAdapter.POSITION_NONE){
             mCurTransaction.remove((Fragment) object);
         } else {

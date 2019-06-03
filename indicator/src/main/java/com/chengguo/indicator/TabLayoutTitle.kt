@@ -6,14 +6,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import androidx.viewpager.widget.ViewPager
+import android.support.v4.view.ViewPager
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import com.chengguo.indicator.TabLayoutTitle.Companion.ANIM_MODE_START
-import com.chengguo.indicator.TabLayoutTitle.Companion.DEFAULT_TOUCH_POSITION
 
 /**
  * 自定义tab导航title

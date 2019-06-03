@@ -1,9 +1,8 @@
 package com.chengguo.tablayoutindicator
 
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.TraceCompat
+import android.support.v4.os.TraceCompat
+import android.support.v7.app.AppCompatActivity
 import com.chengguo.indicator.OnChangeResourceListener
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -52,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         listOf(
             FragmentPage(PageFragment(), "关"),
             FragmentPage(PageFragment(), "热门"),
-            FragmentPage(PageFragment(), "附近的人")
+            FragmentPage(PageFragment(), "附近的人"),
+            FragmentPage(PageFragment(), "关注")
         )
 }

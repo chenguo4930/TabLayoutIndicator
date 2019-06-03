@@ -7,19 +7,13 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import androidx.viewpager.widget.ViewPager
-import android.text.TextPaint
+import android.support.v4.view.ViewPager
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.chengguo.indicator.TabLayoutTitle.Companion.ANIM_MODE_START
-import com.chengguo.indicator.TabLayoutTitle.Companion.DEFAULT_TOUCH_POSITION
 
 /**
  * 自定义tab导航title
@@ -35,8 +29,6 @@ class TabLayoutTextTitle @JvmOverloads constructor(
     LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        const val ANIM_MODE_START = 0
-        const val ANIM_MODE_MIDDLE = 1
 
         const val DEFAULT_COLOR = 0x9f6def
 

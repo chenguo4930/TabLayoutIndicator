@@ -110,7 +110,8 @@
             app:text_indicator_color="@color/color_8B76F9"
             app:text_indicator_height="5dp"
             app:text_indicator_length_auto_transformation="true"
-            app:text_indicator_width="10dp"/>
+            app:text_indicator_width="10dp"
+            app:text_indicator_match_text_width="true"/>
 
     <com.chengguo.indicator.TabLayoutTextTitle
             android:id="@+id/tab_layout_title8"
@@ -175,7 +176,7 @@
             app:indicator_color="#0c0c0e"
             app:indicator_scale="4.0"/>
 
-    <androidx.viewpager.widget.ViewPager
+    <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
